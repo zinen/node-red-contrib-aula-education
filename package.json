@@ -1,0 +1,39 @@
+{
+  "name": "node-red-contrib-aula-education",
+  "version": "0.1.0",
+  "description": "A Node-Red Node for collecting data from aula the danish educational platform.",
+  "keywords": [
+    "node-red",
+    "aula",
+    "education"
+  ],
+  "bugs": {
+    "url": "https://github.com/zinen/node-red-contrib-aula/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "zinen"
+  },
+  "files": [
+    "aula.html",
+    "examples/"
+  ],
+  "main": "aula.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zinen/node-red-contrib-aula"
+  },
+  "scripts": {},
+  "node-red": {
+    "version": ">=1.0.0",
+    "nodes": {
+      "nibeuplink": "aula.js"
+    }
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "dependencies": {
+    "webhead": "^1.1.3"
+  }
+}

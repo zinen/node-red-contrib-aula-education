@@ -1,0 +1,42 @@
+<script type="text/javascript">
+    RED.nodes.registerType('aulaNode', {
+        category: 'request',
+        color: '#389eb2',
+        defaults: {
+            name: { value: "" }
+        },
+        credentials: {
+            username: { type: "text" },
+            password: { type: "password" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "white-globe.png",
+        label: function () {
+            return this.name || "Get Aula data";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="aulaNode">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-user"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Optional name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-username"><i class="fa fa-user"></i> Username</label>
+        <input type="text" id="node-input-username">
+    </div>
+    <div class="form-row">
+        <div class="form-tips">To get a username and password enter <a href="https://www.aula.dk/portal/#/login" target="_blank">aula.dk/portal/#/login</a>. Choose <b>Unilogin</b>. Choose under other options go get username login.
+            </div>
+        </div>
+    <div class="form-row">
+        <label for="node-input-password"><i class="fa fa-user"></i> Password</label>
+        <input type="password" id="node-input-password">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="aulaNode">
+    <p>A Node-Red Node for collecting data from aula the danish educational platform.</p>
+</script>
