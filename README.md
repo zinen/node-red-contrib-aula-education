@@ -1,4 +1,4 @@
-# node-red-contrib-aula
+# node-red-contrib-aula-education
 Node-Red Node for collecting data from aula the danish educational platform.
 
 [![Platform](https://img.shields.io/badge/platform-Node--RED-red.svg)](https://nodered.org)

@@ -42,5 +42,5 @@ jobs:
         uses: BigThunderSR/update-package-node-red-flow-library-action@v1.1.2
         continue-on-error: true
         with:
-          package-name: 'node-red-contrib-aula'
+          package-name: 'node-red-contrib-aula-education'
       
