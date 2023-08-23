@@ -1,17 +1,49 @@
 <script type="text/javascript">
+    RED.nodes.registerType('aulaNode-config', {
+        category: 'config',
+        defaults: {
+            name: { value: "" },
+            username: { value: "",required: true }
+        },
+        credentials: {
+            password: { type: "password", required: true }
+        },
+        label: function () {
+            return this.name || this.username
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="aulaNode-config">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Optional name">
+    </div>
+    <div class="form-row">
+        <div class="form-tips">To get a username and password enter <a href="https://www.aula.dk/portal/#/login" target="_blank">aula.dk/portal/#/login</a>. Choose <b>Unilogin</b>. Choose under other options go get username login.
+        </div>
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-username"><i class="fa fa-user"></i> Username</label>
+        <input type="text" id="node-config-input-username">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-password"><i class="fa fa-lock"></i> Password</label>
+        <input type="password" id="node-config-input-password">
+    </div>
+</script>
+
+<script type="text/javascript">
     RED.nodes.registerType('aulaNode', {
         category: 'request',
         color: '#389eb2',
         defaults: {
-            name: { value: "" }
-        },
-        credentials: {
-            username: { type: "text" },
-            password: { type: "password" }
+            name: { value: "" },
+            server: { type: "aulaNode-config", required: true },
         },
         inputs: 1,
         outputs: 1,
-        icon: "white-globe.png",
+        icon: "font-awesome/fa-graduation-cap",
         label: function () {
             return this.name || "Get Aula data";
         }
@@ -20,20 +52,12 @@
 
 <script type="text/html" data-template-name="aulaNode">
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-user"></i> Name</label>
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Optional name">
     </div>
     <div class="form-row">
-        <label for="node-input-username"><i class="fa fa-user"></i> Username</label>
-        <input type="text" id="node-input-username">
-    </div>
-    <div class="form-row">
-        <div class="form-tips">To get a username and password enter <a href="https://www.aula.dk/portal/#/login" target="_blank">aula.dk/portal/#/login</a>. Choose <b>Unilogin</b>. Choose under other options go get username login.
-            </div>
-        </div>
-    <div class="form-row">
-        <label for="node-input-password"><i class="fa fa-user"></i> Password</label>
-        <input type="password" id="node-input-password">
+        <label for="node-input-server"><i class="fa fa-user"></i> User config</label>
+        <input type="text" id="node-input-server">
     </div>
 </script>
 

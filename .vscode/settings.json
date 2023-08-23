@@ -1,13 +1,18 @@
 {
   "cSpell.words": [
-    "nibe",
-    "nibeuplink",
-    "oneditprepare",
-    "oneditsave",
-    "READSYSTEM",
-    "serviceinfo",
-    "volund",
-    "vølund",
-    "WRITESYSTEM"
-  ]
+    "aula",
+    "webhead"
+  ],
+  "cSpell.ignoreWords": [
+    "aktoer",
+    "ferie",
+    "gået",
+    "ikke",
+    "kommet",
+    "kontakt",
+    "sover",
+    "stede"
+  ],
+  "standard.enable": true,
+  "standard.autoFixOnSave": true
 }

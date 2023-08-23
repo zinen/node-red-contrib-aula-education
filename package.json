@@ -27,7 +27,7 @@
   "node-red": {
     "version": ">=1.0.0",
     "nodes": {
-      "nibeuplink": "aula.js"
+      "aula-nodes": "aula.js"
     }
   },
   "engines": {
