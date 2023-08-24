@@ -1,8 +1,7 @@
-'use strict'
-const Path = require('path')
-const AulaClient = require('aula-client.js')
-
 module.exports = function (RED) {
+  'use strict'
+  const AulaClient = require('./aula-client.js')
+  const Path = require('path')
   function AulaNodeConfigNode (n) {
     RED.nodes.createNode(this, n)
     const node = this
