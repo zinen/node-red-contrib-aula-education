@@ -7,6 +7,12 @@ This node is based on the home assistant unoffical (hacs) addon to get Aula data
 
 A lot of data is returned form API. Some examples on how to parse the incoming data is added.
 
+# Login
+
+You will need to create a Unilogin from here [https://www.aula.dk/portal/#/login](https://www.aula.dk/portal/#/login) choose to create a username and then a password. As aula knows a lot of personal stuff about both parents and thier kids(names, address and more) dont take security lightly and preferably use a password generator and to make a long password as you dont need to remember it my heart. Node-red will store it entrypted. 
+
+## Usage
+
 **How to import:**
 Menu top right -> Import -> Examples -> node-red-contrib-nibeuplink -> basic
 
@@ -34,5 +40,7 @@ icon: mdi:account-school
 friendly_name: {Institusion name} {First name}
 
 ```
+
+## Support of API calls
 
 The addon made by scaarup in python for home assistant does support more then what I converted and tested here. PRs are welcomed. E.g. scaarup also extracts calender info and messeges. I have not been able test any of this so I didn't convert that part.
