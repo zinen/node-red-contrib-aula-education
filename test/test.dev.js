@@ -18,8 +18,13 @@ async function dotEnvMini (inputObject) {
 
 async function start (params) {
   await dotEnvMini(settings)
-  const aulaClient = new AulaClient(settings.AULA_USERNAME, settings.AULA_PASSWORD, '.cookies.json')
-  await aulaClient.updateData()
+  const aulaClient = new AulaClient({
+    username: settings.AULA_USERNAME,
+    password: settings.AULA_PASSWORD,
+    cookieStore: '.cookies.json'
+    // updateCalendar: true
+  })
+  await aulaClient.updateData({ updateCalendar: true })
   console.log(aulaClient)
 }
 start()

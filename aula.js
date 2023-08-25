@@ -6,11 +6,11 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, n)
     const node = this
     try {
-      node.aulaClient = new AulaClient(
-        n.username,
-        node.credentials.password,
-        Path.join(__dirname, '.cookies' + node.id + '.json')
-      )
+      node.aulaClient = new AulaClient({
+        username: n.username,
+        password: node.credentials.password,
+        cookieStore: Path.join(__dirname, '.cookies' + node.id + '.json')
+      })
     } catch (error) {
       node.error('Aula config error: ' + error.message || error)
     }
@@ -37,7 +37,7 @@ module.exports = function (RED) {
       node.server = RED.nodes.getNode(config.server)
       try {
         node.status({ fill: '', text: 'Requesting data' })
-        await node.server.aulaClient.updateData()
+        await node.server.aulaClient.updateData({ updateDailyOverview: config.getDailyOverview, updateMessage: config.getMessages, updateCalendar: config.getCalendar })
         msg.payload = JSON.parse(JSON.stringify(node.server.aulaClient))
         node.status({ fill: '', text: '' })
         send(msg)
