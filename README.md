@@ -17,7 +17,7 @@ You will need to create a Unilogin from here [https://www.aula.dk/portal/#/login
 Menu top right -> Import -> Examples -> node-red-contrib-nibeuplink -> basic
 
 
-Example of what is returned in home assistant as state info. The same and more info is returned by this node.
+Example of what is returned in home assistant as state info in the daily overview. The same and more info is returned by this node.
 ```yaml
 location: null
 sleepIntervals:
@@ -43,4 +43,14 @@ friendly_name: {Institusion name} {First name}
 
 ## Support of API calls
 
-The addon made by scaarup in python for home assistant does support more then what I converted and tested here. PRs are welcomed. E.g. scaarup also extracts calender info and messeges. I have not been able test any of this so I didn't convert that part.
+The origianl python addon made by scaarup for home assistant does support more then what I converted and tested here. PRs are welcomed. What is converted and what is not:
+
+
+| Function   |      Convered to JS      |
+|---|:---:|
+| Get daily overview | Yes |
+| Get unread messages  | Yes |
+| (Untested)Get calendar | Yes |
+| "Ugeplaner" | No |
+| "Huskelisten"  | No |
+
