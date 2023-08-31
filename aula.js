@@ -55,8 +55,11 @@ module.exports = function (RED) {
         done()
       } catch (error) {
         try {
-          node.server.aulaClient.clearSession()
-        } catch (_) { }
+          await node.server.aulaClient.clearSession()
+          node.info('clearing session')
+        } catch (error) { 
+          node.warn(error)
+        }
         node.status({ fill: 'red', text: error.message || error })
         done(error.message || error)
       }

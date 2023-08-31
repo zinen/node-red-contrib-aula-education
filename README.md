@@ -9,7 +9,7 @@ A lot of data is returned form API. Some examples on how to parse the incoming d
 
 # Login
 
-You will need to create a Unilogin from here [https://www.aula.dk/portal/#/login](https://www.aula.dk/portal/#/login) choose to create a username and then a password. As aula knows a lot of personal stuff about both parents and thier kids(names, address and more) dont take security lightly and preferably use a password generator and to make a long password as you dont need to remember it my heart. Node-red will store it entrypted. 
+You will need to create a Unilogin from here [https://www.aula.dk/portal/#/login](https://www.aula.dk/portal/#/login) choose to create a username and then a password. As aula knows a lot of personal stuff about both parents and thier kids(names, address and more) dont take security lightly and preferably use a password generator and to make a long password as you dont need to remember it by heart. Node-red will store it encrypted. 
 
 ## Usage
 
