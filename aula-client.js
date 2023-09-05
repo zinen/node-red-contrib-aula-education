@@ -72,8 +72,18 @@ class AulaClient {
   async clearSession () {
     try {
       await this.#session.clearCookies()
+      let cookieStore = null
       if (this.#internals.cookieStore) {
         await fs.unlink(this.#internals.cookieStore).catch()
+        cookieStore = this.#internals.cookieStore
+        this.#internals.cookieStore = null
+      }
+      if (cookieStore) {
+        this.#session = Webhead({ jarFile: cookieStore })
+        this.#internals.cookieStore = cookieStore
+      }
+      if (!cookieStore || !this.#internals.cookieStore) {
+        this.#session = Webhead()
       }
     } catch (_) { }
   }
