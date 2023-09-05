@@ -1,7 +1,8 @@
 {
   "cSpell.words": [
     "aula",
-    "webhead"
+    "webhead",
+    "csrfp"
   ],
   "cSpell.ignoreWords": [
     "aktoer",
@@ -11,7 +12,12 @@
     "kommet",
     "kontakt",
     "sover",
-    "stede"
+    "stede",
+    "threadids",
+    "intet",
+    "indhold",
+    "ukendt",
+    "afsender"
   ],
   "standard.enable": true,
   "standard.autoFixOnSave": true
