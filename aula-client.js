@@ -210,16 +210,15 @@ class AulaClient {
   }
 
   async updateData ({ updateDailyOverview = null, updateMessage = null, updateCalendar = null }) {
-    this.options.newLogin = false
-    if (!this.options.apiURL) {
+    let authenticated = false
+    if (this.options.apiURL) {
       try {
         await this.getProfile()
-        this.options.authenticated = true
+        authenticated = true
       } catch (_) { }
     }
-    if (this.options.authenticated !== true) {
+    if (authenticated !== true) {
       await this.login()
-      this.options.newLogin = true
     }
     if (updateDailyOverview === true || (updateDailyOverview === null && this.options.updateDailyOverview)) {
       try {
