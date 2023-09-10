@@ -33,22 +33,23 @@ module.exports = function (RED) {
   function AulaNode (config) {
     RED.nodes.createNode(this, config)
     const node = this
+    this.config = config
     node.on('input', async function (msg, send, done) {
       node.server = RED.nodes.getNode(config.server)
       try {
         node.status({ fill: '', text: 'Requesting data' })
-        await node.server.aulaClient.updateData({ updateDailyOverview: config.getDailyOverview, updateMessage: config.getMessages, updateCalendar: config.getCalendar })
-        msg.payload = JSON.parse(JSON.stringify(node.server.aulaClient))
-        if (msg.payload.dailyOverview && Object.keys(msg.payload.dailyOverview).length) {
-          for (const child of Object.values(msg.payload.dailyOverview)) {
-            if (child.error) throw new Error(child.error)
-          }
-        }
-        if (msg.payload.messages && msg.payload.messages.length && msg.payload.messages[0].error) {
-          throw new Error(msg.payload.messages[0].error)
-        }
-        if (msg.payload.calendar && msg.payload.calendar.length && msg.payload.calendar[0] === 'error') {
-          throw new Error(msg.payload.calendar[1])
+        if (!node.config.outputChoice || node.config.outputChoice === 'getDailyOverview') {
+          msg.payload = await node.server.aulaClient.getDailyOverview()
+        } else if (node.config.outputChoice === 'getCalender') {
+          msg.payload = await node.server.aulaClient.getCalender()
+        } else if (node.config.outputChoice === 'getMessages') {
+          msg.payload = await node.server.aulaClient.getMessages()
+        } else if (node.config.outputChoice === 'getPosts') {
+          msg.payload = await node.server.aulaClient.getPosts()
+        } else if (node.config.outputChoice === 'getNotifications') {
+          msg.payload = await node.server.aulaClient.getNotifications()
+        } else {
+          throw new Error('Error understanding configured output choice')
         }
         node.status({ fill: '', text: '' })
         send(msg)

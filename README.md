@@ -1,6 +1,8 @@
 # node-red-contrib-aula-education
 Node-Red Node for collecting data from aula the danish educational platform.
 
+*Still under development. Not all aspects are tested yet*
+
 [![Platform](https://img.shields.io/badge/platform-Node--RED-red.svg)](https://nodered.org)
 
 This node is based on the home assistant unoffical (hacs) addon to get Aula data made by scaarup https://github.com/scaarup/aula. But converted to javascript and put into a node-red node.
@@ -16,6 +18,7 @@ You will need to create a Unilogin from here [https://www.aula.dk/portal/#/login
 **How to import:**
 Menu top right -> Import -> Examples -> node-red-contrib-nibeuplink -> basic
 
+![](image/node.png) The node
 
 Example of what is returned in home assistant as state info in the daily overview. The same and more info is returned by this node.
 ```yaml
@@ -53,4 +56,6 @@ The origianl python addon made by scaarup for home assistant does support more t
 | (Untested)Get calendar | Yes |
 | "Ugeplaner" | No |
 | "Huskelisten"  | No |
+
+Extra functions not found in python version: Get posts, notifications and mark messages as read.
 
