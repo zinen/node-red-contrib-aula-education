@@ -24,7 +24,7 @@ async function start (params) {
     cookieStore: '.cookies.json'
     // updateCalendar: true
   })
-  
+
   // console.log(await aulaClient.getMessages())
   // console.log(await aulaClient.getNotifications())
   console.log(aulaClient)
