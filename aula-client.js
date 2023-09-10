@@ -13,18 +13,25 @@ class AulaClient {
   }
 
   options = { apiVersion: 17, authenticated: false }
+
   constructor ({ username, password, cookieStore = null }) {
     if (!username || typeof username !== 'string') throw new Error('Username must be a string')
     if (!password || typeof password !== 'string') throw new Error('Password must be a string')
     this.#internals.username = username
     this.#internals.password = password
-    if (cookieStore) {
+    this.#internals.cookieStore = cookieStore
+    this.init()
+  }
+
+  init () {
+    if (this.#internals.cookieStore) {
       try {
-        this.#session = Webhead({ jarFile: cookieStore })
-        this.#internals.cookieStore = cookieStore
-      } catch (_) { }
+        this.#session = Webhead({ jarFile: this.#internals.cookieStore })
+      } catch (_) {
+        this.#internals.cookieStore = null
+      }
     }
-    if (!cookieStore || !this.#internals.cookieStore) {
+    if (!this.#internals.cookieStore) {
       this.#session = Webhead()
     }
   }
@@ -75,19 +82,10 @@ class AulaClient {
   async clearSession () {
     try {
       await this.#session.clearCookies()
-      let cookieStore = null
       if (this.#internals.cookieStore) {
         await fs.unlink(this.#internals.cookieStore).catch()
-        cookieStore = this.#internals.cookieStore
-        this.#internals.cookieStore = null
       }
-      if (cookieStore) {
-        this.#session = Webhead({ jarFile: cookieStore })
-        this.#internals.cookieStore = cookieStore
-      }
-      if (!cookieStore || !this.#internals.cookieStore) {
-        this.#session = Webhead()
-      }
+      this.init()
     } catch (_) {
       return false
     }
@@ -117,17 +115,24 @@ class AulaClient {
 
   async checkLoggedIn () {
     let authenticated = false
+    let clearSession = false
     if (this.options.apiURL) {
       try {
         await this.#session.get(this.options.apiURL + '?method=messaging.getThreads&sortOn=date&orderDirection=desc&page=0')
+        if (this.#session.response.statusCode !== 200) throw new Error()
         authenticated = true
-      } catch (_) { }
+      } catch (_) {
+        clearSession = true
+      }
     } else {
       try {
         await this.getProfile()
         authenticated = true
-      } catch (_) { }
+      } catch (_) {
+        clearSession = true
+      }
     }
+    if (clearSession) await this.clearSession()
     if (authenticated !== true) {
       await this.login()
     }

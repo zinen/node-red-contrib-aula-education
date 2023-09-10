@@ -27,7 +27,10 @@ async function start (params) {
 
   // console.log(await aulaClient.getMessages())
   // console.log(await aulaClient.getNotifications())
-  console.log(aulaClient)
+  // console.log(aulaClient)
+  // console.log(await aulaClient.getPosts('2023-09-01'))
+  console.log(await aulaClient.getCalender())
+  await aulaClient.clearSession()
   console.log(await aulaClient.getPosts('2023-09-01'))
 }
 start()
