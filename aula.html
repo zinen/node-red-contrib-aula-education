@@ -40,15 +40,13 @@
         defaults: {
             name: { value: "" },
             server: { type: "aulaNode-config", required: true },
-            getDailyOverview: { value: true},
-            getMessages: { value: false },
-            getCalendar: { value: false }
+            outputChoice: { value: "getDailyOverview" }
         },
         inputs: 1,
         outputs: 1,
         icon: "font-awesome/fa-graduation-cap",
         label: function () {
-            return this.name || "Get Aula data";
+            return this.name || "Aula " + this.outputChoice;
         }
     });
 </script>
@@ -62,7 +60,7 @@
         <label for="node-input-server"><i class="fa fa-user"></i> User config</label>
         <input type="text" id="node-input-server">
     </div>
-    <div class="form-row" style="display: flex; align-items: center">
+    <!-- <div class="form-row" style="display: flex; align-items: center">
         <label></label>
         <input style="width:30px; margin:0" type="checkbox" id="node-input-getDailyOverview">
         <label style="margin:0;width: auto;" for="node-input-getDailyOverview"><i class=""></i> Get daily overview data</label>
@@ -76,6 +74,16 @@
         <label></label>
         <input style="width:30px; margin:0" type="checkbox" id="node-input-getCalendar">
         <label style="margin:0;width: auto;" for="node-input-getCalendar"><i class=""></i> (Untested) Get calendar details</label>
+    </div> -->
+    <div class="form-row">
+        <label for="node-input-outputChoice"><i class="fa fa-envelope"></i> Output choice</label>
+        <select value="" id="node-input-outputChoice">
+            <option value="getDailyOverview">Get daily overview data</option>
+            <option value="getCalender">(Untested) Get calendar details</option>
+            <option value="getMessages">Get unread messages and mark them as read</option>
+            <option value="getPosts">Get new posts since last check</option>
+            <option value="getNotifications">Get active notifications</option>
+        </select>
     </div>
 </script>
 
@@ -83,15 +91,7 @@
     <p>A Node-Red Node for collecting data from aula the danish educational platform.</p>
     <h3>Output</h3>
     <dl class="message-properties">
-        <dt>payload.dailyOverview<span class="property-type">object</span></dt>
-        <dd>Object with child IDs containing meta data of the day.</dd>
-        <dt>payload.messages<span class="property-type">array</span></dt>
-        <dd>Array with containing unread messages <b>if any</b>. Also this marks the messages as read.</dd>
-        <dt>payload.calendar<span class="property-type">array</span></dt>
-        <dd>(Untested) The configured payload of the message.</dd>
-        <dt>payload.updateDateTime<span class="property-type">String timestamp</span></dt>
-        <dd>Timestamp the call was returned from API. Useful for converting time strings to a read timestamp with date and time, see basic example.</dd>
-        <dt>payload.options<span class="property-type">String timestamp</span></dt>
-        <dd>Debug stuff.</dd>
+        <dt>payload<span class="property-type">object|array</span></dt>
+        <dd>Returned object or array from Aula.</dd>
     </dl>
 </script>
