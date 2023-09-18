@@ -52,7 +52,7 @@ class AulaClient {
     const userData = { username: this.#internals.username, password: this.#internals.password, 'selected-aktoer': 'KONTAKT' }
     let redirects = 0
     let success = false
-    while (success === false && redirects < 10) {
+    while (success === false && redirects < 13) {
       const postData = {}
       if (this.#session.$('.form-error-message') && this.#session.$('.form-error-message').length) {
         throw new Error(String(this.#session.$('.form-error-message').html()).replace('<br>', '. '))
@@ -319,10 +319,11 @@ class AulaClient {
     const responseJson = JSON.parse(this.#session.response.data)
     const notifications = []
     const handledIDs = []
+    const markAsRead = { notifications: [] }
+    // await fs.writeFile('logs/notification2.json', this.#session.response.data)
     for (const notification of responseJson.data) {
       for (const institution of this.#internals.profiles[0].institutionProfiles) {
         if (institution.id === notification.institutionProfileId) notification.sender = institution.institutionName
-        query += `&institutionProfileIds[]=${institution.id}`
       }
       if (notification.notificationEventType === 'VacationResponseRequired') {
         if (handledIDs.includes(notification.eventId)) continue
@@ -333,15 +334,54 @@ class AulaClient {
           sender: notification.sender
         })
         handledIDs.push(notification.eventId)
-      } else if (notification.notificationEventType === 'PostSharedWithMe') {
+      } else if (notification.notificationEventType === 'PostSharedWithMe' || notification.notificationEventType === 'MediaAddedToAlbum' || notification.notificationEventType === 'NewMedia') {
         // Ignore notifications that can be found as posts also
+        // ignore notification about an album and NewMedia and look for the tagged event instead
         continue
+      } else if (notification.notificationEventType === 'TaggedInMedia') {
+        markAsRead.notifications.push({ institutionProfileId: notification.institutionProfileId, notificationId: notification.notificationId })
+        if (notification.notificationType !== 'Alert') continue
+        if (handledIDs.includes('TaggedInMedia' + notification.relatedChildName)) continue
+        notifications.push({
+          sendDateTime: notification.triggered,
+          text: 'New images of ' + notification.relatedChildName.split(' ')[0],
+          subject: notification.notificationArea,
+          sender: notification.sender
+        })
+        handledIDs.push('TaggedInMedia' + notification.relatedChildName)
       } else {
         console.warn('unhandled notificationEventType in notification: ' + notification.notificationEventType)
         console.log(notification)
       }
     }
+    // delete notifications - untested
+    // await this.#session.post(this.options.apiURL + '?method=Notifications.deleteNotifications', {
+    //   json: markAsRead,
+    //   headers: { 'csrfp-token': this.csrfToken() }
+    // })
     return notifications
+  }
+
+  async getAlbums (skipCheckLoggedIn = false) {
+    if (!skipCheckLoggedIn) await this.checkLoggedIn()
+    let query = ''
+    for (const child of this.#internals.profiles[0].children) {
+      query += `&filterInstProfileIds[]=${child.id}`
+    }
+    await this.#session.get(this.options.apiURL + '?method=gallery.getAlbums&index=0&limit=12&sortOn=mediaCreatedAt&orderDirection=desc&filterBy=all' + query)
+    if (this.#session.response.statusCode !== 200) throw new Error('Error getting albums')
+    const responseJson = JSON.parse(this.#session.response.data)
+    const albums = []
+    for (const album of responseJson.data) {
+      if (album.id === null) continue
+      albums.push({
+        sendDateTime: album.creationDate,
+        text: album.description,
+        subject: album.title,
+        sender: album.creator.name
+      })
+    }
+    return albums
   }
 }
 
