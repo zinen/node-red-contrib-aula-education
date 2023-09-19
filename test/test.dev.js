@@ -30,6 +30,6 @@ async function start (params) {
   // console.log(await aulaClient.getCalender())
   // await aulaClient.clearSession()
   // console.log(await aulaClient.getPosts('2023-09-01'))
-  console.log(await aulaClient.getAlbums())
+  // console.log(await aulaClient.getAlbums())
 }
 start()

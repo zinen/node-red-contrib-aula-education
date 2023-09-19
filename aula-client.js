@@ -230,7 +230,7 @@ class AulaClient {
       this.messages.push(thread)
     }
     if (unread === true) {
-    // Mark as read
+      // Mark as read
       await this.#session.post(this.options.apiURL + '?method=messaging.setLastReadMessage', {
         json: markAsRead,
         headers: { 'csrfp-token': this.csrfToken() }
@@ -354,11 +354,11 @@ class AulaClient {
         console.log(notification)
       }
     }
-    // delete notifications - untested
-    // await this.#session.post(this.options.apiURL + '?method=Notifications.deleteNotifications', {
-    //   json: markAsRead,
-    //   headers: { 'csrfp-token': this.csrfToken() }
-    // })
+    // Delete notifications, ignore any error
+    this.#session.post(this.options.apiURL + '?method=Notifications.deleteNotifications', {
+      json: markAsRead,
+      headers: { 'csrfp-token': this.csrfToken() }
+    }).catch(error => error)
     return notifications
   }
 
