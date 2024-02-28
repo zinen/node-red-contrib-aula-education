@@ -23,8 +23,8 @@ async function start (params) {
     password: process.env.AULA_PASSWORD,
     cookieStore: '.cookies.json'
   })
-  // console.log(await aulaClient.getMessages())
-  console.log(await aulaClient.getNotifications())
+  console.log(await aulaClient.getMessages())
+  // console.log(await aulaClient.getNotifications())
   // console.log(aulaClient)
   // console.log(await aulaClient.getPosts('2023-09-01'))
   // console.log(await aulaClient.getCalender())

@@ -1,5 +1,6 @@
 'use strict'
 const Webhead = require('webhead')
+const cheerio = require('cheerio')
 const fs = require('node:fs/promises')
 
 class AulaClient {
@@ -52,7 +53,7 @@ class AulaClient {
     const userData = { username: this.#internals.username, password: this.#internals.password, 'selected-aktoer': 'KONTAKT' }
     let redirects = 0
     let success = false
-    while (success === false && redirects < 13) {
+    while (success === false && redirects < 14) {
       const postData = {}
       if (this.#session.$('.form-error-message') && this.#session.$('.form-error-message').length) {
         throw new Error(String(this.#session.$('.form-error-message').html()).replace('<br>', '. '))
@@ -67,7 +68,27 @@ class AulaClient {
           }
         }
       }
-      await this.#session.submit('form', postData)
+      // If there are no input fields. Make sure to handle the shown buttons correctly
+      let choice = null
+      if (!this.#session.$('input').length && this.#session.$('button').length) {
+        for (const button of this.#session.$('button')) {
+          if (button.attribs.name = 'wait') {
+            // This happens close to password expiry
+            await this.#session.submit('form', { wait: '' })
+            choice = true
+            break
+          }
+        }
+        // if (!choice) {
+        //   console.log('-----------')
+        //   console.log('redirects', redirects)
+        //   console.log(this.#session.$('form').html())
+        //   console.log('-----------')
+        // }
+      }
+      if (!choice) {
+        await this.#session.submit('form', postData)
+      }
       if (String(this.#session.url) === 'https://www.aula.dk/portal/') {
         success = true
       }
@@ -174,13 +195,29 @@ class AulaClient {
     return ''
   }
 
+  stringCleanHTML (inputString) {
+    inputString = String(inputString)
+    try {
+      inputString = cheerio.load(inputString).text()
+    } catch (error) {
+      try {
+        inputString = inputString
+          .replace(/<\/?div>/g, '')
+          .replace(/(<br \/>){1,2}/g, '\n')
+          .replace(/<p>/g, '\n')
+          .replace(/<\/p>/g, '')
+      } catch { }
+    }
+    return inputString
+  }
+
   async getMessages (skipCheckLoggedIn = false) {
     if (!skipCheckLoggedIn) await this.checkLoggedIn()
     await this.#session.get(this.options.apiURL + '?method=messaging.getThreads&sortOn=date&orderDirection=desc&page=0')
     let unread = false
     this.messages = []
     const threadids = []
-    let markAsRead = {}
+    let markAsReadPoint = {}
     const responseJson = JSON.parse(this.#session.response.data)
     let limit = 5
     if (!responseJson.data || !responseJson.data.threads) throw new Error('Error looking up messages')
@@ -189,7 +226,7 @@ class AulaClient {
         unread = true
         threadids.push(message.id)
         limit--
-        markAsRead = {
+        markAsReadPoint = {
           threadId: message.id,
           messageId: null,
           commonInboxId: null,
@@ -204,11 +241,11 @@ class AulaClient {
       if (!responseJson.data || !responseJson.data.messages) throw new Error('Error receiving unread messages')
       for (const message of responseJson.data.messages) {
         if (message.messageType !== 'Message') continue
-        // Use the first and newest message id to note into the markAsRead object
-        if (markAsRead.messageId === null) markAsRead.messageId = message.id
+        // Use the first and newest message id to note into the markAsReadPoint object
+        if (markAsReadPoint.messageId === null) markAsReadPoint.messageId = message.id
         try {
           thread.sendDateTime = message.sendDateTime
-          thread.text = String(message.text.html).replace(/<\/?div>/g, '').replace(/(<br \/>){1,2}/g, '\n')
+          thread.text = this.stringCleanHTML(message.text.html)
         } catch (_) {
           try {
             thread.text = String(message.text)
@@ -227,12 +264,24 @@ class AulaClient {
           thread.subject = ''
         }
       }
+      const markAsRead = { notifications: [{ notificationId: `NewMessagePrivateInbox:${id}:Badge`, institutionProfileId: responseJson.data.mailBoxOwner.id }] }
       this.messages.push(thread)
+      // Mark message as read just like with notifications:
+      this.#session.post(this.options.apiURL + '?method=Notifications.deleteNotifications', {
+        json: markAsRead,
+        headers: { 'csrfp-token': this.csrfToken() }
+      }).then(response => console.trace(response))
+        .catch(error => console.trace(error))
+
+      // this.#session.get(this.options.apiURL + '?method=messaging.getMessagesForThread&threadId='+id+'&page=0', {
+      //   headers: { 'csrfp-token': this.csrfToken() }
+      // }).then(response => console.trace(response))
+      // .catch(error => console.warn(error))
     }
     if (unread === true) {
-      // Mark as read
+      // Mark as read from this point
       await this.#session.post(this.options.apiURL + '?method=messaging.setLastReadMessage', {
-        json: markAsRead,
+        json: markAsReadPoint,
         headers: { 'csrfp-token': this.csrfToken() }
       })
     }
@@ -285,7 +334,7 @@ class AulaClient {
       const post = {}
       try {
         post.sendDateTime = message.timestamp
-        post.text = String(message.content.html).replace(/<\/?div>/g, '').replace(/(<br \/>){1,2}/g, '\n')
+        post.text = this.stringCleanHTML(message.content.html)
       } catch (_) {
         try {
           post.text = String(message.content)
