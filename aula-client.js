@@ -72,7 +72,7 @@ class AulaClient {
       let choice = null
       if (!this.#session.$('input').length && this.#session.$('button').length) {
         for (const button of this.#session.$('button')) {
-          if (button.attribs.name = 'wait') {
+          if (button.attribs.name === 'wait') {
             // This happens close to password expiry
             await this.#session.submit('form', { wait: '' })
             choice = true
