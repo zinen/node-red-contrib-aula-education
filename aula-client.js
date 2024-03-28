@@ -79,6 +79,10 @@ class AulaClient {
             break
           }
         }
+        // Grab error text. This will happen after password expiry
+        if (this.#session.$('.alert-text') && this.#session.$('.alert-text').length) {
+          throw new Error(this.stringCleanHTML(this.#session.$('.alert-text').html()))
+        }
         // if (!choice) {
         //   console.log('-----------')
         //   console.log('redirects', redirects)
@@ -208,6 +212,7 @@ class AulaClient {
           .replace(/<\/p>/g, '')
       } catch { }
     }
+    inputString = inputString.replace(/\s+/g, ' ')
     return inputString
   }
 
